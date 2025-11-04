@@ -1,0 +1,38 @@
+from collections import deque
+
+n = int(input("Enter number of processes: "))
+bt = []
+rt = []
+wt = [0] * n
+tat = [0] * n
+
+for i in range(n):
+    b = int(input(f"Enter Burst Time for Process {i+1}: "))
+    bt.append(b)
+    rt.append(b)
+
+tq = int(input("Enter Time Quantum: "))
+time = 0
+q = deque(range(n))
+
+while q:
+    i = q.popleft()
+    if rt[i] > tq:
+        time += tq
+        rt[i] -= tq
+        q.append(i)
+    else:
+        time += rt[i]
+        wt[i] = time - bt[i]
+        tat[i] = time
+        rt[i] = 0
+
+avgWT = sum(wt) / n
+avgTAT = sum(tat) / n
+
+print("\nProcess\tBT\tWT\tTAT")
+for i in range(n):
+    print(f"{i+1}\t{bt[i]}\t{wt[i]}\t{tat[i]}")
+
+print(f"\nAverage Waiting Time = {avgWT:.2f}")
+print(f"Average Turnaround Time = {avgTAT:.2f}")
